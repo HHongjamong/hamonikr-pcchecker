@@ -36,11 +36,15 @@ def count_pw_score():
 def count_update_score():
     cnt = 0
     total_cnt = 10
-
-    update_list = subprocess.check_output("apt list --upgradable | wc -l", shell=True).decode().strip()
+    osname = subprocess.check_output("lsb_release -i", shell=True).decode().strip()
+    if "Hamonikr" in osname:
+        update_list = subprocess.check_output("mintupdate-cli list | wc -l", shell=True).decode().strip()
+    else:
+        update_list = subprocess.check_output("apt list --upgradable | wc -l", shell=True).decode().strip()
+    
     if 1 >= int(str(update_list)):
         cnt = 10
-    if 10 >= int(str(update_list)):
+    elif 10 >= int(str(update_list)):
         cnt = 9
     elif 20 >= int(str(update_list)):
         cnt = 7
