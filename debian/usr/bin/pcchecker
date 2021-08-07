@@ -39,6 +39,11 @@ class Application(Gtk.Window):
         stc_security_status.set_selection_mode(Gtk.SelectionMode.NONE)
         stacks.add_titled(stc_security_status, "label", "보안 상태")
 
+        # add stack 'privacy'
+        stc_privacy = Gtk.ListBox()
+        stc_privacy.set_selection_mode(Gtk.SelectionMode.NONE)
+        stacks.add_titled(stc_privacy, "label", "개인 정보 보호")
+
         # add stack 'system info'
         stc_pc_info = Gtk.ListBox()
         stc_pc_info.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -53,6 +58,22 @@ class Application(Gtk.Window):
         stc_setting = Gtk.ListBox()
         stc_setting.set_selection_mode(Gtk.SelectionMode.NONE)
         stacks.add_titled(stc_setting, "label", "설정")
+
+
+        #privacy gui
+        lbl_privacy_name = Gtk.Label()
+        lbl_privacy = Gtk.Label()
+        box_privacy = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        box_privacy.pack_start(lbl_privacy_name, False, False, 0)
+        box_privacy.pack_start(lbl_privacy, True, False, 0)
+
+        lbl_privacy_name.set_markup("<span font='13' ><b> 주민등록번호      </b></span>")
+
+        row = Gtk.ListBoxRow()
+        row.add(box_privacy)
+        stc_privacy.add(row)
+
+
 
 
         # add reload button at 'security status' stack
@@ -254,12 +275,15 @@ class Application(Gtk.Window):
         ## search password info and set gui ##
         row = Gtk.ListBoxRow()
         lbl_pw_name = Gtk.Label()
+        lbl_pw_score = Gtk.Label()
+        self.lbl_pw_score = Gtk.Label()
         self.lbl_pw_status = Gtk.Label()
         self.lbl_pw_info = Gtk.Label()
 
         (pw_status, pw_past) = set.set_password()       # search password info
 
         lbl_pw_name.set_markup("<b>비밀번호  </b>")
+        self.lbl_pw_score.set_markup(str(count.count_pw_score()) + "<b>점</b>")
         self.lbl_pw_status.set_markup(pw_status)
         self.lbl_pw_info.set_markup(pw_past)
 
@@ -275,6 +299,7 @@ class Application(Gtk.Window):
         box_pw = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box_pw.pack_start(self.lbl_pw_status, False, False, 0)
         box_pw.pack_start(lbl_pw_name, False, False, 15)
+        box_pw.pack_start(self.lbl_pw_score,False,False,0)
         box_pw.pack_start(self.lbl_pw_info, True, True, 0)
         box_pw.pack_start(btn_pw, False, False, 0)
         row.add(box_pw)
@@ -285,11 +310,13 @@ class Application(Gtk.Window):
         lbl_update_name = Gtk.Label()
         self.lbl_update_status = Gtk.Label()
         self.lbl_update_info = Gtk.Label()
+        self.lbl_update_score = Gtk.Label()
 
         osname = self.fnt_command_return_word("lsb_release -i", 'ID:\t', '\n')
         (update_status, update_info) = set.set_update(osname)     # search update info
 
         lbl_update_name.set_markup("<b>업그레이드</b>")
+        self.lbl_update_score.set_markup(str(count.count_update_score()) + "<b>점</b>")
         self.lbl_update_status.set_markup(update_status)
         self.lbl_update_info.set_markup(update_info)
 
@@ -314,6 +341,7 @@ class Application(Gtk.Window):
         box_update = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box_update.pack_start(self.lbl_update_status, False, False, 0)
         box_update.pack_start(lbl_update_name, False, False, 15)
+        box_update.pack_start(self.lbl_update_score, False, False, 0)
         box_update.pack_start(self.lbl_update_info, True, True, 0)
         box_update.pack_start(self.btn_fupdate, False, False, 0)
         box_update.pack_start(btn_update, False, False, 0)
@@ -326,9 +354,10 @@ class Application(Gtk.Window):
         self.lbl_ufw_info = Gtk.Label()
         self.lbl_ufw_status = Gtk.Label()
         self.switch_ufw = Gtk.Switch()
+        self.lbl_ufw_score = Gtk.Label()
 
         lbl_ufw_name.set_markup("<b>방화벽    </b>")
-
+        self.lbl_ufw_score.set_markup(str(count.count_ufw_score()) + "<b>점</b>")
         (self.lbl_ufw_status, self.lbl_ufw_info, self.switch_ufw, ufw_status, ufw_info) = set.set_ufw()     # search ufw info
 
         # add ufw toggle button
@@ -347,6 +376,7 @@ class Application(Gtk.Window):
         box_ufw = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box_ufw.pack_start(self.lbl_ufw_status, False, False, 0)
         box_ufw.pack_start(lbl_ufw_name, False, False, 15)
+        box_ufw.pack_start(self.lbl_ufw_score, False, False, 0)
         box_ufw.pack_start(self.lbl_ufw_info, True, True, 0)
         box_ufw.pack_start(self.switch_ufw, False, False, 0)
         box_ufw.pack_start(btn_ufw, False, False, 0)
@@ -358,9 +388,10 @@ class Application(Gtk.Window):
         lbl_ts_name = Gtk.Label()
         self.lbl_ts_status = Gtk.Label()
         self.lbl_ts_info = Gtk.Label()
+        self.lbl_ts_score = Gtk.Label()
 
         lbl_ts_name.set_markup("<b>백업      </b>")
-
+        self.lbl_ts_score.set_markup(str(count.count_backup_score()) + "<b>점</b>")
         (self.lbl_ts_status, self.lbl_ts_info, ts_status, ts_info) = set.set_backup()       # search backup info
 
         # add backup setting button
@@ -375,6 +406,7 @@ class Application(Gtk.Window):
         box_ts = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box_ts.pack_start(self.lbl_ts_status, False, False, 0)
         box_ts.pack_start(lbl_ts_name, False, False, 15)
+        box_ts.pack_start(self.lbl_ts_score, False, False, 0)
         box_ts.pack_start(self.lbl_ts_info, True, True, 0)
         box_ts.pack_start(btn_ts, False, False, 0)
         row.add(box_ts)

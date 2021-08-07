@@ -3,44 +3,78 @@ import subprocess
 from datetime import date
 import os
 
-# count the score of 'check list'
-def count_score():
-    cnt = 0
-    total_cnt = 0
 
-    # count the score of 'password'
+# count the score of 'check list'
+
+# count the score of 'password'
+def count_pw_score():
+    cnt = 0
+    total_cnt = 10
+
     pw_date = subprocess.check_output("sudo passwd -S $PCCHECKER_USER | awk '{print $3}'", shell=True).decode().split(
         '/')
-    total_cnt += 2
     if date.today() == date(int(pw_date[2]), int(pw_date[0]), int(pw_date[1])):
         pw_date = 0
     else:
         pw_date = int(str(date.today() - date(int(pw_date[2]), int(pw_date[0]), int(pw_date[1]))).split(' day')[0])
-    if 30 >= pw_date:
-        cnt += 2
-    elif 90 >= pw_date:
-        cnt += 1
+    if 1 >= pw_date:
+        cnt = 10
+    elif 10 >= pw_date:
+        cnt = 9
+    elif 20 >= pw_date:
+        cnt = 7
+    elif 40 >= pw_date:
+        cnt = 5
+    elif 60 >= pw_date:
+        cnt = 3
+    elif 80 >= pw_date:
+        cnt = 1
+    pw_score = round(cnt/total_cnt*100)
+    return(pw_score)
 
-    # count the score of 'update'
+# count the score of 'update'
+def count_update_score():
+    cnt = 0
+    total_cnt = 10
+
     update_list = subprocess.check_output("apt list --upgradable | wc -l", shell=True).decode().strip()
-    total_cnt += 2
-    if 5 >= int(str(update_list)):
-        cnt += 2
+    if 1 >= int(str(update_list)):
+        cnt = 10
+    if 10 >= int(str(update_list)):
+        cnt = 9
+    elif 20 >= int(str(update_list)):
+        cnt = 7
+    elif 30 >= int(str(update_list)):
+        cnt = 5
+    elif 40 >= int(str(update_list)):
+        cnt = 3
+    elif 50 >= int(str(update_list)):
+        cnt = 1
+    update_score = round(cnt/total_cnt*100)
+    return(update_score)
 
-    # count the score of 'ufw'
+# count the score of 'ufw'
+def count_ufw_score():
+    cnt = 0
+    total_cnt = 10
+
     ufw_val = subprocess.check_output("sudo ufw status | awk '{print $2}' | head -1", shell=True).decode().strip()
-    total_cnt += 2
     if ufw_val == "활성" or ufw_val == "active":
-        cnt += 2
+        cnt = 10
+    ufw_score = round(cnt/total_cnt*100)
+    return(ufw_score)
 
-    # count the score of 'backup'
-    total_cnt += 2
+# count the score of 'backup'
+def count_backup_score():
+    cnt = 0
+    total_cnt = 10
+
     ts_path = "/timeshift/snapshots"
     if os.path.isdir(ts_path):
         backup_list = subprocess.check_output("ls " + ts_path, shell=True).decode().strip().split('\n')
         backup_list_len = int(len(backup_list))
         if (backup_list_len == 1 and os.listdir(ts_path) == []):
-            cnt+=0
+            cnt = 0
         else:
             backup_list = sorted(backup_list, reverse=True)
             bk_date_list = backup_list[0].split('_')[0].split('-')
@@ -50,16 +84,31 @@ def count_score():
                 diff_day = 0
             else:
                 diff_day = int(str(date.today() - bk_date).split(' day')[0])
-            if 30 > diff_day:
-                cnt += 2
+            if 2 > diff_day:
+                cnt = 10
+            elif 10 > diff_day:
+                cnt = 9
+            elif 20 > diff_day:
+                cnt = 7
+            elif 40 > diff_day:
+                cnt = 5
             elif 60 > diff_day:
-                cnt += 1
-    return (cnt,total_cnt)
+                cnt = 3
+            elif 80 > diff_day:
+                cnt = 1
+    backup_score = round(cnt/total_cnt*100)
+    return(backup_score)
+
+#calculate total_score
+def count_score():
+    score = round((count_pw_score() + count_update_score() + count_ufw_score() + count_backup_score())/4)
+    return(score)
+
 
 # set the score at 'security status'
 def set_score():
-    (cnt,total_cnt) = count_score()     # count score
-    total_score_val = round(cnt / total_cnt * 100)
+    # count score
+    total_score_val = count_score()
 
     # set the total score and status
     if 100 == total_score_val:
