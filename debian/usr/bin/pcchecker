@@ -5,6 +5,7 @@ import subprocess
 import os
 import set
 import count
+import pi_search
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
@@ -61,17 +62,61 @@ class Application(Gtk.Window):
 
 
         #privacy gui
-        lbl_privacy_name = Gtk.Label()
-        lbl_privacy = Gtk.Label()
-        box_privacy = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        box_privacy.pack_start(lbl_privacy_name, False, False, 0)
-        box_privacy.pack_start(lbl_privacy, True, False, 0)
+        box_privacy = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        lbl_privacy_id = Gtk.Label()
+        lbl_privacy_pn = Gtk.Label()
+        lbl_privacy_ad = Gtk.Label()
+        lbl_privacy_cd = Gtk.Label()
+        box_privacy.pack_start(lbl_privacy_id, False, False, 0)
+        
+        listbox_id = Gtk.ListBox()
+        listbox_pn = Gtk.ListBox()
+        listbox_ad = Gtk.ListBox()
+        listbox_cd = Gtk.ListBox()
 
-        lbl_privacy_name.set_markup("<span font='13' ><b> 주민등록번호      </b></span>")
+        # id
+        num, result = pi_search.search_info(0)
+        lbl_privacy_id.set_markup("<span font='13' ><b>주민번호</b>로 추정되는 데이터 <b>"+str(num)+"</b>건</span>")
+        for file in result:
+            filelink = "file://" + file.split(":")[0]
+            btn_file = Gtk.LinkButton(uri=filelink, label=file.split(":")[0])
+            listbox_id.add(btn_file)
+        box_privacy.pack_start(listbox_id, False, False, 0)
+
+        # pn
+        num, result = pi_search.search_info(1)
+        lbl_privacy_pn.set_markup("<span font='13' ><b>전화번호</b>로 추정되는 데이터 <b>"+str(num)+"</b>건</span>")
+        box_privacy.pack_start(lbl_privacy_pn, False, False, 0)
+        for file in result:
+            filelink = "file://" + file.split(":")[0]
+            btn_file = Gtk.LinkButton(uri=filelink, label=file.split(":")[0])
+            listbox_pn.add(btn_file)
+        box_privacy.pack_start(listbox_pn, False, False, 0)
+
+        # address
+        num, result = pi_search.search_info(2)
+        lbl_privacy_ad.set_markup("<span font='13' ><b>주소</b>로 추정되는 데이터 <b>"+str(num)+"</b>건</span>")
+        box_privacy.pack_start(lbl_privacy_ad, False, False, 0)
+        for file in result:
+            filelink = "file://" + file.split(":")[0]
+            btn_file = Gtk.LinkButton(uri=filelink, label=file.split(":")[0])
+            listbox_ad.add(btn_file)
+        box_privacy.pack_start(listbox_ad, False, False, 0)
+
+        # card
+        num, result = pi_search.search_info(3)
+        lbl_privacy_cd.set_markup("<span font='13' ><b>카드</b>로 추정되는 데이터 <b>"+str(num)+"</b>건</span>")
+        box_privacy.pack_start(lbl_privacy_cd, False, False, 0)
+        for file in result:
+            filelink = "file://" + file.split(":")[0]
+            btn_file = Gtk.LinkButton(uri=filelink, label=file.split(":")[0])
+            listbox_cd.add(btn_file)
+        box_privacy.pack_start(listbox_cd, False, False, 0)
 
         row = Gtk.ListBoxRow()
         row.add(box_privacy)
         stc_privacy.add(row)
+        
 
 
 
