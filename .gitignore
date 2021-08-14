@@ -6,4 +6,4 @@ debian/hamonikr-pcchecker/
 
 .idea/
 .build.swp
-__pychache__
+*.pyc
