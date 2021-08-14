@@ -1,7 +1,7 @@
 import subprocess
 # home = subprocess.check_output("echo $HOME", shell=True).decode().strip()
-home = '/home/yeji'
-
+home = subprocess.check_output("USER_HOME=$(eval echo ~${SUDO_USER}) && echo ${USER_HOME}", shell=True).decode().strip()
+print(home)
 def search_info(info_type):
     num1, result1 = search(info_type,0)
     num2, result2 = search(info_type,1)
