@@ -1,14 +1,17 @@
 import subprocess
-# home = subprocess.check_output("echo $HOME", shell=True).decode().strip()
 home = subprocess.check_output("USER_HOME=$(eval echo ~${SUDO_USER}) && echo ${USER_HOME}", shell=True).decode().strip()
 print(home)
+
 def search_info(info_type):
-    num1, result1 = search(info_type,0)
-    num2, result2 = search(info_type,1)
-    num3, result3 = search(info_type,2)
-    num = num1 + num2 + num3
-    result = result1 + result2 + result3
-    return num, result
+    types = 4
+    total_num = 0
+    total_result = []
+    for i in range(types):
+        num, result = search(info_type,i)
+        total_num += num
+        total_result += result
+
+    return total_num, total_result
 
 def search(s_type, f_type):
     # ID card number
@@ -30,6 +33,8 @@ def search(s_type, f_type):
         num, result = odt_search(regex)
     elif f_type == 2:
         num, result = hwp_search(regex)
+    elif f_type == 3:
+        num,result = pdf_search(regex)
     return num, result
 
 # search all type files
@@ -57,6 +62,17 @@ def odt_search(regex):
 # search *.hwp files
 def hwp_search(regex):
     result = subprocess.check_output("sudo sh hwpsearch.sh '"+regex+"' "+home+"/", shell=True, executable='/bin/bash', timeout=None)
+    result = result.decode().strip()
+    num = 0
+    if (result!=""): num = len(result.split('\n'))
+    print(num)
+    print(result)
+    result = result.split('\n')
+    return num, result
+
+# search *.pdf files
+def pdf_search(regex):    
+    result = subprocess.check_output("pdfgrep -orP '"+regex+"' "+home, shell=True, executable='/bin/bash', timeout=None)
     result = result.decode().strip()
     num = 0
     if (result!=""): num = len(result.split('\n'))
