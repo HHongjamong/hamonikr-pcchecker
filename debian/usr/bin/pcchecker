@@ -25,14 +25,14 @@ class Application(Gtk.Window):
 
         # set stacks
         stacks = Gtk.Stack()
-        stacks.set_hexpand(True)
-        stacks.set_vexpand(False)
+        stacks.set_hexpand(0)
+        stacks.set_vexpand(1)
         stacks.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
         stacks.set_transition_duration(1000)
 
         stack_switcher = Gtk.StackSwitcher()
         stack_switcher.set_stack(stacks)
-        box_outer.pack_start(stack_switcher, True, True, 0)
+        box_outer.pack_start(stack_switcher, 0, 0, 0)
         box_outer.pack_start(stacks, True, True, 0)
 
         # add stack 'security status'
@@ -41,9 +41,10 @@ class Application(Gtk.Window):
         stacks.add_titled(stc_security_status, "label", "보안 상태")
 
         # add stack 'privacy'
-        stc_privacy = Gtk.ListBox()
-        stc_privacy.set_selection_mode(Gtk.SelectionMode.NONE)
-        stacks.add_titled(stc_privacy, "label", "개인 정보 보호")
+        self.scrolledwindow = Gtk.ScrolledWindow()
+        # stc_privacy = Gtk.ListBox()
+        # stc_privacy.set_selection_mode(Gtk.SelectionMode.NONE)
+        stacks.add_titled(self.scrolledwindow, "label", "개인 정보 보호")
 
         # add stack 'system info'
         stc_pc_info = Gtk.ListBox()
@@ -92,25 +93,27 @@ class Application(Gtk.Window):
                 expand = Gtk.Expander(label="카드번호로 추정되는 데이터 "+str(num)+"건")
                 listbox = listbox_cd
                 category_check = self.cd_check
-            
+
+            expand.set_expanded(True)
             category_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
             checklist = []
             checklist.append(category_check)
             category_box.pack_start(category_check, False, False, 5)
-            category_box.pack_start(expand, True, True, 0)
-            box_privacy.pack_start(category_box, True, True, 0)
+            category_box.pack_start(expand, 0, 0, 0)
+            box_privacy.pack_start(category_box, 0, 0, 0)
             for file in result:
                 if file!="":
                     filepath = file.split(":")[0]
                     search_text = file.split(":")[1]
+                    filename = filepath.split("/")[-1]
                     box = Gtk.Box()
                     check = Gtk.CheckButton()
                     checklist.append(check)
                     box.pack_start(check, False, False, 0)
                     filelink = "file://" + filepath
-                    btn_file = Gtk.LinkButton(uri=filelink, label=filepath)
+                    btn_file = Gtk.LinkButton(uri=filelink, label=filename)
                     box.pack_start(btn_file, False, False, 0)
-                    search_text = Gtk.Label(search_text)
+                    search_text = Gtk.Label(label=search_text)
                     box.pack_start(search_text, False, False, 5)
                     listbox.add(box)
             expand.add(listbox)
@@ -126,90 +129,18 @@ class Application(Gtk.Window):
         set_search(2)
         # category : card num
         set_search(3)
-
-        allcheck_btn = Gtk.CheckButton("전체선택")
-        allcheck_btn.connect("clicked", self.fnt_allcheck, allcheck_btn)
-        rm_btn = Gtk.Button("일괄 삭제")
-        rm_btn.connect("clicked", self.fnt_pirm, self.all_result, self.all_checklist)
-        stc_privacy.add(allcheck_btn)
-        stc_privacy.add(box_privacy)
-        stc_privacy.add(rm_btn)
-
-        # # id
-        # num, result = pi_search.search_info(0)
-        # id_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        # self.id_check = Gtk.CheckButton()
-        # checklist_id = []
-        # checklist_id.append(self.id_check)
-        # id_box.pack_start(self.id_check, False, False, 5)
-        # id_expand = Gtk.Expander(label="주민번호로 추정되는 데이터 "+str(num)+"건")
-        # id_box.pack_start(id_expand, True, True, 0)
-        # # lbl_privacy_id.set_markup("<span font='13' ><b>주민번호</b>로 추정되는 데이터 <b>"+str(num)+"</b>건</span>")
-        # box_privacy.pack_start(id_box, True, True, 0)
-        # for file in result:
-        #     if file!="":
-        #         filepath = file.split(":")[0]
-        #         search_text = file.split(":")[1]
-        #         box = Gtk.Box()
-        #         check = Gtk.CheckButton()
-        #         checklist_id.append(check)
-        #         box.pack_start(check, False, False, 0)
-        #         filelink = "file://" + filepath
-        #         btn_file = Gtk.LinkButton(uri=filelink, label=filepath)
-        #         box.pack_start(btn_file, False, False, 0)
-        #         search_text = Gtk.Label(search_text)
-        #         box.pack_start(search_text, False, False, 5)
-        #         listbox_id.add(box)
-        # id_expand.add(listbox_id)
-        # self.id_check.connect("toggled",self.on_id_toggled, checklist_id)        
-
-        # # pn
-        # num, result = pi_search.search_info(1)
-        # pn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-        # self.pn_check = Gtk.CheckButton()
-        # checklist_pn = []
-        # checklist_pn.append(self.pn_check)
-        # pn_box.pack_start(self.pn_check, False, False, 5)
-        # pn_expand = Gtk.Expander(label="전화번호로 추정되는 데이터 "+str(num)+"건")
-        # # lbl_privacy_pn.set_markup("<span font='13' ><b>전화번호</b>로 추정되는 데이터 <b>"+str(num)+"</b>건</span>")
-        # box_privacy.pack_start(pn_box, True, True, 0)
-        # for file in result:
-        #     if file!="":
-        #         checklist_id.append(check)
-        #         box.pack_start(check, False, False, 0)
-        #         filelink = "file://" + file.split(":")[0]
-        #         btn_file = Gtk.LinkButton(uri=filelink, label=file.split(":")[0])
-        #         listbox_pn.add(btn_file)
-        # pn_expand.add(listbox_pn)
-        # # box_privacy.pack_start(listbox_pn, True, True, 0)
-
-        # # address
-        # num, result = pi_search.search_info(2)
-        # ad_expand = Gtk.Expander(label="주소로 추정되는 데이터 "+str(num)+"건")
-        # # lbl_privacy_ad.set_markup("<span font='13' ><b>주소</b>로 추정되는 데이터 <b>"+str(num)+"</b>건</span>")
-        # box_privacy.pack_start(ad_expand, True, True, 0)
-        # for file in result:
-        #     if file!="":
-        #         filelink = "file://" + file.split(":")[0]
-        #         btn_file = Gtk.LinkButton(uri=filelink, label=file.split(":")[0])
-        #         listbox_ad.add(btn_file)
-        # ad_expand.add(listbox_ad)
-        # # box_privacy.pack_start(listbox_ad, True, True, 0)
-
-        # # card
-        # num, result = pi_search.search_info(3)
-        # cd_expand = Gtk.Expander(label="카드번호로 추정되는 데이터 "+str(num)+"건")
-        # # lbl_privacy_cd.set_markup("<span font='13' ><b>카드</b>로 추정되는 데이터 <b>"+str(num)+"</b>건</span>")
-        # box_privacy.pack_start(cd_expand, True, True, 0)
-        # for file in result:
-        #     if file!="":
-        #         filelink = "file://" + file.split(":")[0]
-        #         btn_file = Gtk.LinkButton(uri=filelink, label=file.split(":")[0])
-        #         listbox_cd.add(btn_file)
-        # cd_expand.add(listbox_cd)
-        # box_privacy.pack_start(listbox_cd, True, True, 0)
-
         
+        allcheck_btn = Gtk.CheckButton(label="전체선택")
+        allcheck_btn.connect("clicked", self.fnt_allcheck, allcheck_btn)
+        rm_btn = Gtk.Button(label="일괄 삭제")
+        rm_btn.connect("clicked", self.fnt_pirm, self.all_result, self.all_checklist)
+
+        privacy_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
+        privacy_box.pack_start(allcheck_btn, 0, 0, 0)
+        privacy_box.pack_start(box_privacy, 0, 0, 0)
+        privacy_box.pack_start(rm_btn, 0, 0, 0)
+
+        self.scrolledwindow.add(privacy_box)
 
 
         # add reload button at 'security status' stack
@@ -746,7 +677,7 @@ class Application(Gtk.Window):
 
     # run the application
     def run(self):
-        self.set_default_size(800,1500)
+        self.set_default_size(500,1000)
         self.connect("destroy", Gtk.main_quit)
         self.show_all()
         Gtk.main()
