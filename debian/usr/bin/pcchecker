@@ -346,6 +346,7 @@ class Application(Gtk.Window):
         self.lbl_pw_score = Gtk.Label()
         self.lbl_pw_status = Gtk.Label()
         self.lbl_pw_info = Gtk.Label()
+        self.pw_spinner = Gtk.Spinner()
 
         (pw_status, pw_past) = set.set_password()       # search password info
 
@@ -368,6 +369,7 @@ class Application(Gtk.Window):
         box_pw.pack_start(lbl_pw_name, False, False, 15)
         box_pw.pack_start(self.lbl_pw_score,False,False,0)
         box_pw.pack_start(self.lbl_pw_info, True, True, 0)
+        box_pw.pack_start(self.pw_spinner, False, False, 0)
         box_pw.pack_start(btn_pw, False, False, 0)
         row.add(box_pw)
         stc_security_checklist.add(row)
@@ -378,6 +380,7 @@ class Application(Gtk.Window):
         self.lbl_update_status = Gtk.Label()
         self.lbl_update_info = Gtk.Label()
         self.lbl_update_score = Gtk.Label()
+        self.update_spinner = Gtk.Spinner()
 
         osname = self.fnt_command_return_word("lsb_release -i", 'ID:\t', '\n')
         (update_status, update_info) = set.set_update(osname)     # search update info
@@ -410,6 +413,7 @@ class Application(Gtk.Window):
         box_update.pack_start(lbl_update_name, False, False, 15)
         box_update.pack_start(self.lbl_update_score, False, False, 0)
         box_update.pack_start(self.lbl_update_info, True, True, 0)
+        box_update.pack_start(self.update_spinner, False, False, 0)
         box_update.pack_start(self.btn_fupdate, False, False, 0)
         box_update.pack_start(btn_update, False, False, 0)
         row.add(box_update)
@@ -422,7 +426,7 @@ class Application(Gtk.Window):
         self.lbl_ufw_status = Gtk.Label()
         self.switch_ufw = Gtk.Switch()
         self.lbl_ufw_score = Gtk.Label()
-        # self.spinner = Gtk.Spinner()
+        self.ufw_spinner = Gtk.Spinner()
 
         lbl_ufw_name.set_markup("<b>방화벽    </b>")
         self.lbl_ufw_score.set_markup(str(count.count_ufw_score()) + "<b>점</b>")
@@ -447,7 +451,7 @@ class Application(Gtk.Window):
         box_ufw.pack_start(lbl_ufw_name, False, False, 15)
         box_ufw.pack_start(self.lbl_ufw_score, False, False, 0)
         box_ufw.pack_start(self.lbl_ufw_info, True, True, 0)
-        # box_ufw.pack_start(self.spinner, False, False, 0)
+        box_ufw.pack_start(self.ufw_spinner, False, False, 0)
         box_ufw.pack_start(self.switch_ufw, False, False, 0)
         box_ufw.pack_start(btn_ufw, False, False, 0)
         row.add(box_ufw)
@@ -459,6 +463,7 @@ class Application(Gtk.Window):
         self.lbl_ts_status = Gtk.Label()
         self.lbl_ts_info = Gtk.Label()
         self.lbl_ts_score = Gtk.Label()
+        self.ts_spinner = Gtk.Spinner()
 
         lbl_ts_name.set_markup("<b>백업      </b>")
         self.lbl_ts_score.set_markup(str(count.count_backup_score()) + "<b>점</b>")
@@ -478,6 +483,7 @@ class Application(Gtk.Window):
         box_ts.pack_start(lbl_ts_name, False, False, 15)
         box_ts.pack_start(self.lbl_ts_score, False, False, 0)
         box_ts.pack_start(self.lbl_ts_info, True, True, 0)
+        box_ts.pack_start(self.ts_spinner, False, False, 0)
         box_ts.pack_start(btn_ts, False, False, 0)
         row.add(box_ts)
         stc_security_checklist.add(row)
@@ -554,6 +560,7 @@ class Application(Gtk.Window):
 
     # open cinnamon-settings/user-accounts window when password setting button clicked
     def fnt_open_user(self, widget):
+        self.pw_spinner.start()
         self.logger("Open user - pw")
         osname = self.fnt_command_return_word("lsb_release -i", 'ID:\t', '\n')
         # for Hamonikr users
@@ -562,6 +569,7 @@ class Application(Gtk.Window):
         # for GooroomOS and TmaxOS users
         else :
             subprocess.call('XDG_CURRENT_DESKTOP=GNOME gnome-control-center user-accounts', shell=True)
+        self.pw_spinner.stop()
 
     # reload password info when password setting window is closed
     def fnt_close_user(self,widget):
@@ -611,8 +619,10 @@ class Application(Gtk.Window):
 
     # open gufw window when ufw setting button is clicked
     def fnt_open_ufw(self, widget):
+        self.update_spinner.start()
         self.logger("Open ufw")
         subprocess.call('sudo gufw', shell=True)
+        self.update_spinner.stop()
 
     # reload ufw info when ufw setting window is closed
     def fnt_close_ufw(self, widget):
@@ -628,14 +638,14 @@ class Application(Gtk.Window):
         self.logger("Switch ufw")
         # turn on ufw
         if switch_ufw.get_active():
-            # self.spinner.start()
+            self.ufw_spinner.start()
             subprocess.call("sudo ufw enable", shell=True)
-            # self.spinner.stop()
+            self.ufw_spinner.stop()
         # turn off ufw
         else:
-            # self.spinner.start()
+            self.ufw_spinner.start()
             subprocess.call("sudo ufw disable", shell=True)
-            # self.spinner.stop()
+            self.ufw_spinner.stop()
         (lbl_ufw_status, lbl_ufw_info, switch_ufw, ufw_status, ufw_info) = set.set_ufw()    # search ufw info
         # set ufw gui
         self.lbl_ufw_status.set_markup(ufw_status)
@@ -657,8 +667,10 @@ class Application(Gtk.Window):
 
     # open timeshift-gtk window when backup setting button is clicked
     def fnt_open_timeshift(self, widget):
+        self.ts_spinner.start()
         self.logger("Open timeshft")
         subprocess.call('sudo timeshift-gtk', shell=True)
+        self.ts_spinner.stop()
 
     # reload backup info when backup setting window is closed
     def fnt_close_timeshift(self,widget):
