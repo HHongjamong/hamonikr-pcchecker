@@ -422,12 +422,14 @@ class Application(Gtk.Window):
         self.lbl_ufw_status = Gtk.Label()
         self.switch_ufw = Gtk.Switch()
         self.lbl_ufw_score = Gtk.Label()
+        # self.spinner = Gtk.Spinner()
 
         lbl_ufw_name.set_markup("<b>방화벽    </b>")
         self.lbl_ufw_score.set_markup(str(count.count_ufw_score()) + "<b>점</b>")
         (self.lbl_ufw_status, self.lbl_ufw_info, self.switch_ufw, ufw_status, ufw_info) = set.set_ufw()     # search ufw info
 
         # add ufw toggle button
+
         self.switch_ufw.connect("notify::active", self.fnt_ufw_toggled)
         self.switch_ufw.set_tooltip_text("방화벽 상태를 즉시 변경합니다.")
 
@@ -445,6 +447,7 @@ class Application(Gtk.Window):
         box_ufw.pack_start(lbl_ufw_name, False, False, 15)
         box_ufw.pack_start(self.lbl_ufw_score, False, False, 0)
         box_ufw.pack_start(self.lbl_ufw_info, True, True, 0)
+        # box_ufw.pack_start(self.spinner, False, False, 0)
         box_ufw.pack_start(self.switch_ufw, False, False, 0)
         box_ufw.pack_start(btn_ufw, False, False, 0)
         row.add(box_ufw)
@@ -625,10 +628,14 @@ class Application(Gtk.Window):
         self.logger("Switch ufw")
         # turn on ufw
         if switch_ufw.get_active():
+            # self.spinner.start()
             subprocess.call("sudo ufw enable", shell=True)
+            # self.spinner.stop()
         # turn off ufw
         else:
+            # self.spinner.start()
             subprocess.call("sudo ufw disable", shell=True)
+            # self.spinner.stop()
         (lbl_ufw_status, lbl_ufw_info, switch_ufw, ufw_status, ufw_info) = set.set_ufw()    # search ufw info
         # set ufw gui
         self.lbl_ufw_status.set_markup(ufw_status)

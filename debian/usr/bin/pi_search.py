@@ -1,6 +1,5 @@
 import subprocess
 home = subprocess.check_output("USER_HOME=$(eval echo ~${SUDO_USER}) && echo ${USER_HOME}", shell=True).decode().strip()
-print(home)
 
 def search_info(info_type):
     types = 4
@@ -38,19 +37,23 @@ def search(s_type, f_type):
     return num, result
 
 # search all type files
-def reg_search(regex):    
-    result = subprocess.check_output("grep -orIP --exclude={.*,*.svg,*.png,*.jpg,*.jpeg} --exclude-dir={.*,logs,venv,node_modules,2021-1} '"+regex+"' "+home+"/", shell=True, executable='/bin/bash', timeout=None)
-    result = result.decode().strip()
-    num = 0
-    if (result!=""): num = len(result.split('\n'))
-    print(num)
-    print(result)
-    result = result.split('\n')
-    return num, result
+def reg_search(regex):   
+    try:
+        result = subprocess.check_output("grep -orIP --exclude={.*,*.svg,*.png,*.jpg,*.jpeg} --exclude-dir={.*,logs,venv,node_modules,2021-1} '"+regex+"' "+home+"/", shell=True, executable='/bin/bash', timeout=None)
+        result = result.decode().strip()
+        num = 0
+        if (result!=""): num = len(result.split('\n'))
+        print(num)
+        print(result)
+        result = result.split('\n')
+        return num, result
+    except subprocess.CalledProcessError as e: 
+        print('no reg_search found: ',regex)
+        return 0,""
 
 # search *.odt files
 def odt_search(regex):
-    result = subprocess.check_output("sudo sh odtsearch.sh '"+regex+"' "+home+"/", shell=True, executable='/bin/bash', timeout=None)
+    result = subprocess.check_output("sudo sh odtsearch.sh '"+regex+"' "+home, shell=True, executable='/bin/bash', timeout=None)
     result = result.decode().strip()
     num = 0
     if (result!=""): num = len(result.split('\n'))
@@ -71,12 +74,15 @@ def hwp_search(regex):
     return num, result
 
 # search *.pdf files
-def pdf_search(regex):    
-    result = subprocess.check_output("pdfgrep -orP '"+regex+"' "+home, shell=True, executable='/bin/bash', timeout=None)
-    result = result.decode().strip()
-    num = 0
-    if (result!=""): num = len(result.split('\n'))
-    print(num)
-    print(result)
-    result = result.split('\n')
-    return num, result
+def pdf_search(regex):  
+    try:
+        result = subprocess.check_output("pdfgrep -orP '"+regex+"' "+home, shell=True, executable='/bin/bash', timeout=None)
+        result = result.decode().strip()
+        num = len(result.split('\n'))
+        print(num)
+        print(result)
+        result = result.split('\n')
+        return num, result
+    except subprocess.CalledProcessError as e:
+        print ('no pdf file found')
+        return 0, ""
