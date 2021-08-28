@@ -25,7 +25,7 @@ class AskquitWindow(Gtk.Window):
         super().__init__(title="PC 지킴이")
 
         self.set_border_width(10)
-
+        
         self.set_default_size(300, 200)
 
         outerbox = Gtk.Box(spacing=6, orientation=Gtk.Orientation.VERTICAL)
@@ -58,7 +58,7 @@ class Application(Gtk.Window):
         # init and show main window
         Gtk.Window.__init__(self, title="Hamonikr PC Checker")
         self.set_border_width(10)
-        box_outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        box_outer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         self.add(box_outer)
 
         # set stacks
@@ -70,6 +70,7 @@ class Application(Gtk.Window):
 
         stack_switcher = Gtk.StackSwitcher()
         stack_switcher.set_stack(stacks)
+        stack_switcher.set_orientation(Gtk.Orientation.VERTICAL)
         box_outer.pack_start(stack_switcher, 0, 0, 0)
         box_outer.pack_start(stacks, True, True, 0)
 
@@ -77,27 +78,26 @@ class Application(Gtk.Window):
         stc_security_status = Gtk.ListBox()
         stc_security_status.set_selection_mode(Gtk.SelectionMode.NONE)
         stacks.add_titled(stc_security_status, "label", "보안 상태")
+        stacks.child_set_property(stc_security_status,"icon-name","document-open")
 
         # add stack 'privacy'
         self.scrolledwindow = Gtk.ScrolledWindow()
         # stc_privacy = Gtk.ListBox()
         # stc_privacy.set_selection_mode(Gtk.SelectionMode.NONE)
         stacks.add_titled(self.scrolledwindow, "label", "개인 정보 보호")
+        stacks.child_set_property(self.scrolledwindow,"icon-name","document-open")
 
         # add stack 'system info'
         stc_pc_info = Gtk.ListBox()
         stc_pc_info.set_selection_mode(Gtk.SelectionMode.NONE)
         stacks.add_titled(stc_pc_info, "label", "시스템 정보")
-
-        # add stack 'check list'
-        stc_security_checklist = Gtk.ListBox()
-        stc_security_checklist.set_selection_mode(Gtk.SelectionMode.NONE)
-        stacks.add_titled(stc_security_checklist, "label", "점검 항목")
+        stacks.child_set_property(stc_pc_info,"icon-name","document-open")
 
         # add stack setting
         stc_setting = Gtk.ListBox()
         stc_setting.set_selection_mode(Gtk.SelectionMode.NONE)
         stacks.add_titled(stc_setting, "label", "설정")
+        stacks.child_set_property(stc_setting,"icon-name","document-open")
 
 
         #privacy gui
@@ -410,7 +410,7 @@ class Application(Gtk.Window):
         box_pw.pack_start(self.pw_spinner, False, False, 0)
         box_pw.pack_start(btn_pw, False, False, 0)
         row.add(box_pw)
-        stc_security_checklist.add(row)
+        stc_security_status.add(row)
 
         ## search update info and set gui ##
         row = Gtk.ListBoxRow()
@@ -455,7 +455,7 @@ class Application(Gtk.Window):
         box_update.pack_start(self.btn_fupdate, False, False, 0)
         box_update.pack_start(btn_update, False, False, 0)
         row.add(box_update)
-        stc_security_checklist.add(row)
+        stc_security_status.add(row)
 
         ## search ufw info and set gui ##
         row = Gtk.ListBoxRow()
@@ -493,7 +493,7 @@ class Application(Gtk.Window):
         box_ufw.pack_start(self.switch_ufw, False, False, 0)
         box_ufw.pack_start(btn_ufw, False, False, 0)
         row.add(box_ufw)
-        stc_security_checklist.add(row)
+        stc_security_status.add(row)
 
         ## search backup info and set gui ##
         row = Gtk.ListBoxRow()
@@ -524,7 +524,7 @@ class Application(Gtk.Window):
         box_ts.pack_start(self.ts_spinner, False, False, 0)
         box_ts.pack_start(btn_ts, False, False, 0)
         row.add(box_ts)
-        stc_security_checklist.add(row)
+        stc_security_status.add(row)
 
 
         ### set 'setting' contents ###
@@ -615,6 +615,7 @@ class Application(Gtk.Window):
         (pw_status, pw_past) = set.set_password()       # search password info
         self.lbl_pw_status.set_markup(pw_status)
         self.lbl_pw_info.set_markup(pw_past)
+        self.lbl_pw_score.set_markup(str(count.count_pw_score()) + "<b>점</b>")
 
     # open minupdate/gooroom-update-launcher/gnome-control-center window when update setting button clicked
     def fnt_open_updatemanager(self, widget):
@@ -649,6 +650,7 @@ class Application(Gtk.Window):
         (update_status, update_info) = set.set_update(osname)
         self.lbl_update_status.set_markup(update_status)
         self.lbl_update_info.set_markup(update_info)
+        self.lbl_update_score.set_markup(str(count.count_update_score()) + "<b>점</b>")
 
     # notify that update is in progress when one-click update button is clicked
     def fnt_fupdate_pressed(self,widget):
@@ -687,6 +689,7 @@ class Application(Gtk.Window):
         (lbl_ufw_status, lbl_ufw_info, switch_ufw, ufw_status, ufw_info) = set.set_ufw()    # search ufw info
         # set ufw gui
         self.lbl_ufw_status.set_markup(ufw_status)
+        self.lbl_ufw_score.set_markup(str(count.count_ufw_score()) + "<b>점</b>")
         self.lbl_ufw_info.set_markup(ufw_info)
 
     # turn on/off alarm by alarm toggle button
@@ -717,6 +720,7 @@ class Application(Gtk.Window):
         # set backup gui
         self.lbl_ts_status.set_markup(ts_status)
         self.lbl_ts_info.set_markup(ts_info)
+        self.lbl_ts_score.set_markup(str(count.count_backup_score()) + "<b>점</b>")
 
     # write log with date and time
     def logger(self, message):
@@ -762,7 +766,7 @@ class Application(Gtk.Window):
 
     # run the application
     def run(self):
-        self.set_default_size(500,1000)
+        self.set_default_size(650,800)
         self.connect("destroy", self.ask_quit)
         self.show_all()
         Gtk.main()
