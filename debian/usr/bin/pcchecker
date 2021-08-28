@@ -6,11 +6,49 @@ import os
 import set
 import count
 import pi_search
+from pystray import MenuItem as item
+import pystray
+from PIL import Image
+import subprocess    
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 from gi.repository import Gtk
 from datetime import date, datetime
+
+
+
+class AskquitWindow(Gtk.Window):
+
+    def __init__(self):
+
+        super().__init__(title="PC 지킴이")
+
+        self.set_border_width(10)
+
+        self.set_default_size(300, 200)
+
+        outerbox = Gtk.Box(spacing=6, orientation=Gtk.Orientation.VERTICAL)
+
+        self.add(outerbox)
+
+        self.popover = Gtk.Popover()
+
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+
+        vbox.pack_start(Gtk.ModelButton(label="Item 1"), False, True, 10)
+
+        vbox.pack_start(Gtk.Label(label="Item 2"), False, True, 10)
+
+        vbox.show_all()
+
+        self.popover.add(vbox)
+
+        self.popover.set_position(Gtk.PositionType.BOTTOM)
+
+        button = Gtk.MenuButton(label="Click Me", popover=self.popover)
+
+        outerbox.pack_start(button, False, True, 0) 
 
 class Application(Gtk.Window):
 
@@ -121,14 +159,14 @@ class Application(Gtk.Window):
             self.all_result.append(result)
             self.all_checklist.append(checklist)
         
-        # category : id
-        set_search(0)
-        # category : phone num
-        set_search(1)
-        # category : address
-        set_search(2)
-        # category : card num
-        set_search(3)
+        # # category : id
+        # set_search(0)
+        # # category : phone num
+        # set_search(1)
+        # # category : address
+        # set_search(2)
+        # # category : card num
+        # set_search(3)
         
         allcheck_btn = Gtk.CheckButton(label="전체선택")
         allcheck_btn.connect("clicked", self.fnt_allcheck, allcheck_btn)
@@ -694,12 +732,42 @@ class Application(Gtk.Window):
         f.write("[" + time + "] " + message + "\n")
         f.close()
 
+    # system tray - start app
+    def action_start(self,widget):
+        subprocess.call('pcchecker_asroot',shell=True)
+
+    # system tray - quit app
+    def action_quit(self,widget):
+        self.icon.stop()
+        Gtk.main_quit()
+
+    # ask continue in system tray
+    def ask_quit(self, widget):
+        dialog = Gtk.MessageDialog(
+                            buttons=Gtk.ButtonsType.YES_NO)
+        dialog.props.text = "PC 지킴이를 시스템 트레이에서 계속 할까요?"
+        response = dialog.run()
+        dialog.destroy()
+
+        # Run system tray icon when user press YES button
+        if response == Gtk.ResponseType.YES:
+            print('YES button pressed')
+            image = Image.open("/usr/share/icons/hicolor/256x256/apps/pccheckericon.png")
+            menu = (item('PC 지킴이 열기', self.action_start), item('종료', self.action_quit), )
+            self.icon = pystray.Icon("name", image, 'title', menu)
+            self.icon.run()  
+        else:
+            print('NO button pressed')
+            Gtk.main_quit()    
+
     # run the application
     def run(self):
         self.set_default_size(500,1000)
-        self.connect("destroy", Gtk.main_quit)
+        self.connect("destroy", self.ask_quit)
         self.show_all()
         Gtk.main()
+
+
 
 # ensure that user has manager access
 if 'root' != getpass.getuser():
@@ -708,3 +776,6 @@ if 'root' != getpass.getuser():
         shell=True)
 else:
     Application().run()
+
+
+
