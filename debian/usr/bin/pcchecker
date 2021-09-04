@@ -71,6 +71,7 @@ class Application(Gtk.Window):
         stack_switcher = Gtk.StackSwitcher()
         stack_switcher.set_stack(stacks)
         stack_switcher.set_orientation(Gtk.Orientation.VERTICAL)
+        stack_switcher.props.icon_size = 5
         box_outer.pack_start(stack_switcher, 0, 0, 0)
         box_outer.pack_start(stacks, True, True, 0)
 
@@ -78,26 +79,26 @@ class Application(Gtk.Window):
         stc_security_status = Gtk.ListBox()
         stc_security_status.set_selection_mode(Gtk.SelectionMode.NONE)
         stacks.add_titled(stc_security_status, "label", "보안 상태")
-        stacks.child_set_property(stc_security_status,"icon-name","document-open")
+        stacks.child_set_property(stc_security_status,"icon-name","emblem-default")
 
         # add stack 'privacy'
         self.scrolledwindow = Gtk.ScrolledWindow()
         # stc_privacy = Gtk.ListBox()
         # stc_privacy.set_selection_mode(Gtk.SelectionMode.NONE)
         stacks.add_titled(self.scrolledwindow, "label", "개인 정보 보호")
-        stacks.child_set_property(self.scrolledwindow,"icon-name","document-open")
+        stacks.child_set_property(self.scrolledwindow,"icon-name","emblem-readonly")
 
         # add stack 'system info'
         stc_pc_info = Gtk.ListBox()
         stc_pc_info.set_selection_mode(Gtk.SelectionMode.NONE)
         stacks.add_titled(stc_pc_info, "label", "시스템 정보")
-        stacks.child_set_property(stc_pc_info,"icon-name","document-open")
+        stacks.child_set_property(stc_pc_info,"icon-name","emblem-documents")
 
         # add stack setting
         stc_setting = Gtk.ListBox()
         stc_setting.set_selection_mode(Gtk.SelectionMode.NONE)
         stacks.add_titled(stc_setting, "label", "설정")
-        stacks.child_set_property(stc_setting,"icon-name","document-open")
+        stacks.child_set_property(stc_setting,"icon-name","emblem-system")
 
 
         #privacy gui
@@ -220,6 +221,14 @@ class Application(Gtk.Window):
         # set score
         self.fnt_set_score(widget=self)
 
+        self.empty = Gtk.Label()
+        empty_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        empty_box.pack_start(self.empty, True, False, 0)
+        self.empty.set_markup("<span font='20'><b> </b></span>")
+        row = Gtk.ListBoxRow()
+        row.add(empty_box)
+        stc_security_status.add(row)
+
 
         ### set 'system info' contents ###
 
@@ -231,13 +240,15 @@ class Application(Gtk.Window):
 
         # os gui
         lbl_os_name = Gtk.Label()
+        lbl_os_name.set_alignment(0,0)
         lbl_os = Gtk.Label()
-        box_os = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_os.set_alignment(0,0)
+        box_os = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         box_os.pack_start(lbl_os_name, False, False, 0)
-        box_os.pack_start(lbl_os, True, False, 0)
+        box_os.pack_start(lbl_os, False, False, 0)
 
-        lbl_os_name.set_markup("<span font='13' ><b> 운영체제      </b></span>")
-        lbl_os.set_markup("<span>" + os_info + "</span>")
+        lbl_os_name.set_markup("<span font='13'>\n<b> 운영체제      </b></span>")
+        lbl_os.set_markup("<span>          " + os_info + "</span>")
 
         row = Gtk.ListBoxRow()
         row.add(box_os)
@@ -251,13 +262,15 @@ class Application(Gtk.Window):
 
             # cinnamon gui
             lbl_cinnamon_name = Gtk.Label()
+            lbl_cinnamon_name.set_alignment(0,0)
             lbl_cinnamon = Gtk.Label()
-            box_cinnamon = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+            lbl_cinnamon.set_alignment(0,0)
+            box_cinnamon = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
             box_cinnamon.pack_start(lbl_cinnamon_name, False, False, 0)
-            box_cinnamon.pack_start(lbl_cinnamon, True, False, 0)
+            box_cinnamon.pack_start(lbl_cinnamon, False, False, 0)
 
-            lbl_cinnamon_name.set_markup("<span font='13'><b> 시나몬 버전   </b></span>")
-            lbl_cinnamon.set_markup("<span>"+cinnamon_ver+"</span>")
+            lbl_cinnamon_name.set_markup("<span font='13'>\n<b> 시나몬 버전   </b></span>")
+            lbl_cinnamon.set_markup("<span>          "+cinnamon_ver+"</span>")
 
             row = Gtk.ListBoxRow()
             row.add(box_cinnamon)
@@ -269,13 +282,15 @@ class Application(Gtk.Window):
 
         # kernel gui
         lbl_kernel_name = Gtk.Label()
+        lbl_kernel_name.set_alignment(0,0)
         lbl_kernel = Gtk.Label()
-        box_kernel = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_kernel.set_alignment(0,0)
+        box_kernel = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         box_kernel.pack_start(lbl_kernel_name, False, False, 0)
-        box_kernel.pack_start(lbl_kernel, True, False, 0)
+        box_kernel.pack_start(lbl_kernel, False, False, 0)
 
-        lbl_kernel_name.set_markup("<span font='13'><b> 리눅스 커널   </b></span>")
-        lbl_kernel.set_markup("<span>" + kernel_ver + "</span>")
+        lbl_kernel_name.set_markup("<span font='13'>\n<b> 리눅스 커널   </b></span>")
+        lbl_kernel.set_markup("<span>          " + kernel_ver + "</span>")
 
         row = Gtk.ListBoxRow()
         row.add(box_kernel)
@@ -288,13 +303,15 @@ class Application(Gtk.Window):
 
         # CPU gui
         lbl_cpu_name = Gtk.Label()
+        lbl_cpu_name.set_alignment(0,0)
         lbl_cpu = Gtk.Label()
-        box_cpu = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_cpu.set_alignment(0,0)
+        box_cpu = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         box_cpu.pack_start(lbl_cpu_name, False, False, 0)
-        box_cpu.pack_start(lbl_cpu, True, False, 0)
+        box_cpu.pack_start(lbl_cpu, False, False, 0)
 
-        lbl_cpu_name.set_markup("<span font='13'><b> 프로세서      </b></span>")
-        lbl_cpu.set_markup("<span>" + cpu_name + " X " + cpu_cnt + "</span>")
+        lbl_cpu_name.set_markup("<span font='13'>\n<b> 프로세서      </b></span>")
+        lbl_cpu.set_markup("<span>          " + cpu_name + " X " + cpu_cnt + "</span>")
 
         row = Gtk.ListBoxRow()
         row.add(box_cpu)
@@ -307,13 +324,15 @@ class Application(Gtk.Window):
 
         # memory gui
         lbl_memory_name = Gtk.Label()
+        lbl_memory_name.set_alignment(0,0)
         lbl_memory = Gtk.Label()
-        box_memory = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_memory.set_alignment(0,0)
+        box_memory = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         box_memory.pack_start(lbl_memory_name, False, False, 0)
-        box_memory.pack_start(lbl_memory, True, False, 0)
+        box_memory.pack_start(lbl_memory, False, False, 0)
 
-        lbl_memory_name.set_markup("<span font='13'><b> 메모리        </b></span>")
-        lbl_memory.set_markup("<span>" + memory_name + "</span>")
+        lbl_memory_name.set_markup("<span font='13'>\n<b> 메모리        </b></span>")
+        lbl_memory.set_markup("<span>          " + memory_name + "</span>")
 
         row = Gtk.ListBoxRow()
         row.add(box_memory)
@@ -327,13 +346,15 @@ class Application(Gtk.Window):
 
         # disk gui
         lbl_disk_name = Gtk.Label()
+        lbl_disk_name.set_alignment(0,0)
         lbl_disk = Gtk.Label()
-        box_disk = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_disk.set_alignment(0,0)
+        box_disk = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         box_disk.pack_start(lbl_disk_name, False, False, 0)
-        box_disk.pack_start(lbl_disk, True, False, 0)
+        box_disk.pack_start(lbl_disk, False, False, 0)
 
-        lbl_disk_name.set_markup("<span font='13'><b> 하드 드라이브 </b></span>")
-        lbl_disk.set_markup("<span>" + disk_val + " GB</span>")
+        lbl_disk_name.set_markup("<span font='13'>\n<b> 하드 드라이브 </b></span>")
+        lbl_disk.set_markup("<span>          " + disk_val + " GB</span>")
 
         row = Gtk.ListBoxRow()
         row.add(box_disk)
@@ -344,13 +365,15 @@ class Application(Gtk.Window):
 
         # graphic gui
         lbl_graphic_name = Gtk.Label()
+        lbl_graphic_name.set_alignment(0,0)
         lbl_graphic = Gtk.Label()
-        box_graphic = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_graphic.set_alignment(0,0)
+        box_graphic = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         box_graphic.pack_start(lbl_graphic_name, False, False, 0)
-        box_graphic.pack_start(lbl_graphic, True, False, 0)
+        box_graphic.pack_start(lbl_graphic, False, False, 0)
 
-        lbl_graphic_name.set_markup("<span font='13'><b> 그래픽카드    </b></span>")
-        lbl_graphic.set_markup("<span>" + graphic_val + "</span>")
+        lbl_graphic_name.set_markup("<span font='13'>\n<b> 그래픽카드    </b></span>")
+        lbl_graphic.set_markup("<span>          " + graphic_val + "</span>")
 
         row = Gtk.ListBoxRow()
         row.add(box_graphic)
@@ -362,13 +385,15 @@ class Application(Gtk.Window):
 
         # uuid gui
         lbl_uuid_name = Gtk.Label()
+        lbl_uuid_name.set_alignment(0,0)
         lbl_uuid = Gtk.Label()
-        box_uuid = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+        lbl_uuid.set_alignment(0,0)
+        box_uuid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         box_uuid.pack_start(lbl_uuid_name, False, False, 0)
         box_uuid.pack_start(lbl_uuid, True, False, 0)
 
-        lbl_uuid_name.set_markup("<span font='13'><b> 단말 제품 번호</b></span>")
-        lbl_uuid.set_markup("<span>"+uuid_val+"</span>")
+        lbl_uuid_name.set_markup("<span font='13'>\n<b> 단말 제품 번호</b></span>")
+        lbl_uuid.set_markup("<span>          "+uuid_val+"</span>")
 
         row = Gtk.ListBoxRow()
         row.add(box_uuid)
@@ -384,12 +409,11 @@ class Application(Gtk.Window):
         self.lbl_pw_score = Gtk.Label()
         self.lbl_pw_status = Gtk.Label()
         self.lbl_pw_info = Gtk.Label()
-        self.pw_spinner = Gtk.Spinner()
 
         (pw_status, pw_past) = set.set_password()       # search password info
 
-        lbl_pw_name.set_markup("<b>비밀번호  </b>")
-        self.lbl_pw_score.set_markup(str(count.count_pw_score()) + "<b>점</b>")
+        lbl_pw_name.set_markup("<span font='12'><b>비밀번호  </b></span>")
+        self.lbl_pw_score.set_markup("<span font='11'><b>" + str(count.count_pw_score()) + "점</b></span>")
         self.lbl_pw_status.set_markup(pw_status)
         self.lbl_pw_info.set_markup(pw_past)
 
@@ -407,7 +431,6 @@ class Application(Gtk.Window):
         box_pw.pack_start(lbl_pw_name, False, False, 15)
         box_pw.pack_start(self.lbl_pw_score,False,False,0)
         box_pw.pack_start(self.lbl_pw_info, True, True, 0)
-        box_pw.pack_start(self.pw_spinner, False, False, 0)
         box_pw.pack_start(btn_pw, False, False, 0)
         row.add(box_pw)
         stc_security_status.add(row)
@@ -418,13 +441,12 @@ class Application(Gtk.Window):
         self.lbl_update_status = Gtk.Label()
         self.lbl_update_info = Gtk.Label()
         self.lbl_update_score = Gtk.Label()
-        self.update_spinner = Gtk.Spinner()
 
         osname = self.fnt_command_return_word("lsb_release -i", 'ID:\t', '\n')
         (update_status, update_info) = set.set_update(osname)     # search update info
 
-        lbl_update_name.set_markup("<b>업그레이드</b>")
-        self.lbl_update_score.set_markup(str(count.count_update_score()) + "<b>점</b>")
+        lbl_update_name.set_markup("<span font='12'><b>업그레이드</b></span>")
+        self.lbl_update_score.set_markup("<span font='11'><b>" + str(count.count_update_score()) + "점</b></span>")
         self.lbl_update_status.set_markup(update_status)
         self.lbl_update_info.set_markup(update_info)
 
@@ -451,7 +473,6 @@ class Application(Gtk.Window):
         box_update.pack_start(lbl_update_name, False, False, 15)
         box_update.pack_start(self.lbl_update_score, False, False, 0)
         box_update.pack_start(self.lbl_update_info, True, True, 0)
-        box_update.pack_start(self.update_spinner, False, False, 0)
         box_update.pack_start(self.btn_fupdate, False, False, 0)
         box_update.pack_start(btn_update, False, False, 0)
         row.add(box_update)
@@ -464,10 +485,9 @@ class Application(Gtk.Window):
         self.lbl_ufw_status = Gtk.Label()
         self.switch_ufw = Gtk.Switch()
         self.lbl_ufw_score = Gtk.Label()
-        self.ufw_spinner = Gtk.Spinner()
 
-        lbl_ufw_name.set_markup("<b>방화벽    </b>")
-        self.lbl_ufw_score.set_markup(str(count.count_ufw_score()) + "<b>점</b>")
+        lbl_ufw_name.set_markup("<span font='12'><b>방화벽    </b></span>")
+        self.lbl_ufw_score.set_markup("<span font='11'><b>" + str(count.count_ufw_score()) + "점</b></span>")
         (self.lbl_ufw_status, self.lbl_ufw_info, self.switch_ufw, ufw_status, ufw_info) = set.set_ufw()     # search ufw info
 
         # add ufw toggle button
@@ -489,7 +509,6 @@ class Application(Gtk.Window):
         box_ufw.pack_start(lbl_ufw_name, False, False, 15)
         box_ufw.pack_start(self.lbl_ufw_score, False, False, 0)
         box_ufw.pack_start(self.lbl_ufw_info, True, True, 0)
-        box_ufw.pack_start(self.ufw_spinner, False, False, 0)
         box_ufw.pack_start(self.switch_ufw, False, False, 0)
         box_ufw.pack_start(btn_ufw, False, False, 0)
         row.add(box_ufw)
@@ -501,10 +520,9 @@ class Application(Gtk.Window):
         self.lbl_ts_status = Gtk.Label()
         self.lbl_ts_info = Gtk.Label()
         self.lbl_ts_score = Gtk.Label()
-        self.ts_spinner = Gtk.Spinner()
 
-        lbl_ts_name.set_markup("<b>백업      </b>")
-        self.lbl_ts_score.set_markup(str(count.count_backup_score()) + "<b>점</b>")
+        lbl_ts_name.set_markup("<span font='12'><b>백업      </b></span>")
+        self.lbl_ts_score.set_markup("<span font='11'><b>" + str(count.count_backup_score()) + "점</b></span>")
         (self.lbl_ts_status, self.lbl_ts_info, ts_status, ts_info) = set.set_backup()       # search backup info
 
         # add backup setting button
@@ -521,7 +539,6 @@ class Application(Gtk.Window):
         box_ts.pack_start(lbl_ts_name, False, False, 15)
         box_ts.pack_start(self.lbl_ts_score, False, False, 0)
         box_ts.pack_start(self.lbl_ts_info, True, True, 0)
-        box_ts.pack_start(self.ts_spinner, False, False, 0)
         box_ts.pack_start(btn_ts, False, False, 0)
         row.add(box_ts)
         stc_security_status.add(row)
@@ -598,7 +615,6 @@ class Application(Gtk.Window):
 
     # open cinnamon-settings/user-accounts window when password setting button clicked
     def fnt_open_user(self, widget):
-        self.pw_spinner.start()
         self.logger("Open user - pw")
         osname = self.fnt_command_return_word("lsb_release -i", 'ID:\t', '\n')
         # for Hamonikr users
@@ -607,7 +623,6 @@ class Application(Gtk.Window):
         # for GooroomOS and TmaxOS users
         else :
             subprocess.call('XDG_CURRENT_DESKTOP=GNOME gnome-control-center user-accounts', shell=True)
-        self.pw_spinner.stop()
 
     # reload password info when password setting window is closed
     def fnt_close_user(self,widget):
@@ -615,7 +630,7 @@ class Application(Gtk.Window):
         (pw_status, pw_past) = set.set_password()       # search password info
         self.lbl_pw_status.set_markup(pw_status)
         self.lbl_pw_info.set_markup(pw_past)
-        self.lbl_pw_score.set_markup(str(count.count_pw_score()) + "<b>점</b>")
+        self.lbl_pw_score.set_markup("<span font='11'><b>" + str(count.count_pw_score()) + "점</b></span>")
 
     # open minupdate/gooroom-update-launcher/gnome-control-center window when update setting button clicked
     def fnt_open_updatemanager(self, widget):
@@ -650,7 +665,7 @@ class Application(Gtk.Window):
         (update_status, update_info) = set.set_update(osname)
         self.lbl_update_status.set_markup(update_status)
         self.lbl_update_info.set_markup(update_info)
-        self.lbl_update_score.set_markup(str(count.count_update_score()) + "<b>점</b>")
+        self.lbl_update_score.set_markup("<span font='11'><b>" + str(count.count_update_score()) + "점</b></span>")
 
     # notify that update is in progress when one-click update button is clicked
     def fnt_fupdate_pressed(self,widget):
@@ -659,10 +674,8 @@ class Application(Gtk.Window):
 
     # open gufw window when ufw setting button is clicked
     def fnt_open_ufw(self, widget):
-        self.update_spinner.start()
         self.logger("Open ufw")
         subprocess.call('sudo gufw', shell=True)
-        self.update_spinner.stop()
 
     # reload ufw info when ufw setting window is closed
     def fnt_close_ufw(self, widget):
@@ -678,18 +691,14 @@ class Application(Gtk.Window):
         self.logger("Switch ufw")
         # turn on ufw
         if switch_ufw.get_active():
-            self.ufw_spinner.start()
             subprocess.call("sudo ufw enable", shell=True)
-            self.ufw_spinner.stop()
         # turn off ufw
         else:
-            self.ufw_spinner.start()
             subprocess.call("sudo ufw disable", shell=True)
-            self.ufw_spinner.stop()
         (lbl_ufw_status, lbl_ufw_info, switch_ufw, ufw_status, ufw_info) = set.set_ufw()    # search ufw info
         # set ufw gui
         self.lbl_ufw_status.set_markup(ufw_status)
-        self.lbl_ufw_score.set_markup(str(count.count_ufw_score()) + "<b>점</b>")
+        self.lbl_ufw_score.set_markup("<span font='11'><b>" + str(count.count_ufw_score()) + "점</b></span>")
         self.lbl_ufw_info.set_markup(ufw_info)
 
     # turn on/off alarm by alarm toggle button
@@ -708,10 +717,8 @@ class Application(Gtk.Window):
 
     # open timeshift-gtk window when backup setting button is clicked
     def fnt_open_timeshift(self, widget):
-        self.ts_spinner.start()
         self.logger("Open timeshft")
         subprocess.call('sudo timeshift-gtk', shell=True)
-        self.ts_spinner.stop()
 
     # reload backup info when backup setting window is closed
     def fnt_close_timeshift(self,widget):
@@ -720,7 +727,7 @@ class Application(Gtk.Window):
         # set backup gui
         self.lbl_ts_status.set_markup(ts_status)
         self.lbl_ts_info.set_markup(ts_info)
-        self.lbl_ts_score.set_markup(str(count.count_backup_score()) + "<b>점</b>")
+        self.lbl_ts_score.set_markup("<span font='11'><b>" + str(count.count_backup_score()) + "점</b></span>")
 
     # write log with date and time
     def logger(self, message):
@@ -766,7 +773,7 @@ class Application(Gtk.Window):
 
     # run the application
     def run(self):
-        self.set_default_size(650,800)
+        self.set_default_size(690,720)
         self.connect("destroy", self.ask_quit)
         self.show_all()
         Gtk.main()

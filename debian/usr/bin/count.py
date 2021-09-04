@@ -119,7 +119,7 @@ def set_score():
         total_score_text = "<span color='green' font='40'><b>" + str(total_score_val) + "</b></span><span><b>/100</b></span>"
         total_status_text = "<span color='green' font='80'><b>안전</b></span>"
         total_info_text = "<span>시스템이 안전합니다.</span>"
-    elif 70 < total_score_val:
+    elif 60 < total_score_val:
         total_score_text = "<span color='orange' font='40'><b>" + str(total_score_val) + "</b></span><span><b>/100</b></span>"
         total_status_text = "<span color='orange' font='80'><b>주의</b></span>"
         total_info_text = "<span>시스템 관리에 주의가 필요합니다.</span>"
