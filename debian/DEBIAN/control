@@ -10,7 +10,9 @@ Depends: ufw,
          gufw,
          timeshift,
          gir1.2-appindicator3-0.1,
-         pciutils
+         pciutils,
+         pdfgrep,
+         python3-pip
 Recommends: 
 Section: utils
 Priority: optional

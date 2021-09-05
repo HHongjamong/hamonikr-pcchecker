@@ -1,0 +1,11 @@
+[Unit]
+Description=Search for pcchecker
+
+[Service]
+Type=oneshot
+WorkingDirectory=/usr/bin/
+Environment="HOME=%I"
+ExecStart=sudo /bin/bash exec_search.sh $HOME
+
+[Install]
+WantedBy=multi-user.target

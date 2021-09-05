@@ -5,7 +5,6 @@ import subprocess
 import os
 import set
 import count
-import pi_search
 from pystray import MenuItem as item
 import pystray
 from PIL import Image
@@ -13,42 +12,10 @@ import subprocess
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 from datetime import date, datetime
 
 
-
-class AskquitWindow(Gtk.Window):
-
-    def __init__(self):
-
-        super().__init__(title="PC 지킴이")
-
-        self.set_border_width(10)
-        
-        self.set_default_size(300, 200)
-
-        outerbox = Gtk.Box(spacing=6, orientation=Gtk.Orientation.VERTICAL)
-
-        self.add(outerbox)
-
-        self.popover = Gtk.Popover()
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-
-        vbox.pack_start(Gtk.ModelButton(label="Item 1"), False, True, 10)
-
-        vbox.pack_start(Gtk.Label(label="Item 2"), False, True, 10)
-
-        vbox.show_all()
-
-        self.popover.add(vbox)
-
-        self.popover.set_position(Gtk.PositionType.BOTTOM)
-
-        button = Gtk.MenuButton(label="Click Me", popover=self.popover)
-
-        outerbox.pack_start(button, False, True, 0) 
 
 class Application(Gtk.Window):
 
@@ -82,11 +49,10 @@ class Application(Gtk.Window):
         stacks.child_set_property(stc_security_status,"icon-name","emblem-default")
 
         # add stack 'privacy'
-        self.scrolledwindow = Gtk.ScrolledWindow()
-        # stc_privacy = Gtk.ListBox()
-        # stc_privacy.set_selection_mode(Gtk.SelectionMode.NONE)
-        stacks.add_titled(self.scrolledwindow, "label", "개인 정보 보호")
-        stacks.child_set_property(self.scrolledwindow,"icon-name","emblem-readonly")
+        stc_privacy = Gtk.ListBox()
+        stc_privacy.set_selection_mode(Gtk.SelectionMode.NONE)
+        stacks.add_titled(stc_privacy, "label", "개인 정보 보호")
+        stacks.child_set_property(stc_privacy,"icon-name","emblem-readonly")
 
         # add stack 'system info'
         stc_pc_info = Gtk.ListBox()
@@ -101,85 +67,72 @@ class Application(Gtk.Window):
         stacks.child_set_property(stc_setting,"icon-name","emblem-system")
 
 
-        #privacy gui
-        box_privacy = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-        listbox_id = Gtk.ListBox()
-        listbox_pn = Gtk.ListBox()
-        listbox_ad = Gtk.ListBox()
-        listbox_cd = Gtk.ListBox()
-        self.id_check = Gtk.CheckButton()
-        self.pn_check = Gtk.CheckButton()
-        self.ad_check = Gtk.CheckButton()
-        self.cd_check = Gtk.CheckButton()
-        self.all_result = []
-        self.all_checklist = []
+        #privacy gui - before search
+        box_privacy_main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        lbl_privacy = Gtk.Label()
+        lbl_privacy.set_markup("<span font='13' ><b> 개인정보 데이터 검색 </b></span>")
+        lbl_privacy_content = Gtk.Label()
+        lbl_privacy_content.set_markup("<span font='10' >아래 <b>시작하기</b> 버튼을 누르면 PC 내 개인정보로 추정되는 데이터 검색을 시작합니다.</span>")
+        btn_search = Gtk.Button("시작하기")
+        btn_search.connect("clicked", self.fnt_start_search)
+        mainBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
-        def set_search(category):
-            num, result = pi_search.search_info(category)
-            if category == 0:
-                expand = Gtk.Expander(label="주민번호로 추정되는 데이터 "+str(num)+"건")
-                listbox = listbox_id
-                category_check = self.id_check
-            elif category == 1:
-                expand = Gtk.Expander(label="전화번호로 추정되는 데이터 "+str(num)+"건")
-                listbox = listbox_pn
-                category_check = self.pn_check
-            elif category == 2:
-                expand = Gtk.Expander(label="주소로 추정되는 데이터 "+str(num)+"건")
-                listbox = listbox_ad
-                category_check = self.ad_check
-            elif category == 3:
-                expand = Gtk.Expander(label="카드번호로 추정되는 데이터 "+str(num)+"건")
-                listbox = listbox_cd
-                category_check = self.cd_check
-
-            expand.set_expanded(True)
-            category_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-            checklist = []
-            checklist.append(category_check)
-            category_box.pack_start(category_check, False, False, 5)
-            category_box.pack_start(expand, 0, 0, 0)
-            box_privacy.pack_start(category_box, 0, 0, 0)
-            for file in result:
-                if file!="":
-                    filepath = file.split(":")[0]
-                    search_text = file.split(":")[1]
-                    filename = filepath.split("/")[-1]
-                    box = Gtk.Box()
-                    check = Gtk.CheckButton()
-                    checklist.append(check)
-                    box.pack_start(check, False, False, 0)
-                    filelink = "file://" + filepath
-                    btn_file = Gtk.LinkButton(uri=filelink, label=filename)
-                    box.pack_start(btn_file, False, False, 0)
-                    search_text = Gtk.Label(label=search_text)
-                    box.pack_start(search_text, False, False, 5)
-                    listbox.add(box)
-            expand.add(listbox)
-            category_check.connect("toggled",self.on_check_toggled, category_check, checklist)
-            self.all_result.append(result)
-            self.all_checklist.append(checklist)
+        box_privacy_main.pack_start(lbl_privacy, False, False, 0)
+        box_privacy_main.pack_start(lbl_privacy_content, True, False, 0)
+        box_privacy_main.pack_start(btn_search, True, False, 0)
+        box_privacy_main.pack_start(mainBox, False, False, 50)
         
-        # # category : id
-        # set_search(0)
-        # # category : phone num
-        # set_search(1)
-        # # category : address
-        # set_search(2)
-        # # category : card num
-        # set_search(3)
-        
-        allcheck_btn = Gtk.CheckButton(label="전체선택")
-        allcheck_btn.connect("clicked", self.fnt_allcheck, allcheck_btn)
-        rm_btn = Gtk.Button(label="일괄 삭제")
-        rm_btn.connect("clicked", self.fnt_pirm, self.all_result, self.all_checklist)
+        self.label_id = Gtk.Label()
+        self.label_id.set_xalign(0)
+        self.label_pn = Gtk.Label()
+        self.label_pn.set_xalign(0)
+        self.label_ad = Gtk.Label()
+        self.label_ad.set_xalign(0)
+        self.label_cd = Gtk.Label()
+        self.label_cd.set_xalign(0)
 
-        privacy_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
-        privacy_box.pack_start(allcheck_btn, 0, 0, 0)
-        privacy_box.pack_start(box_privacy, 0, 0, 0)
-        privacy_box.pack_start(rm_btn, 0, 0, 0)
+        self.labellist = []
+        for _ in range(16):
+            self.labellist.append(Gtk.Label())
+        self.spinnerlist = []
+        for _ in range(16):
+            self.spinnerlist.append(Gtk.Spinner())
+       
+        mainBox.pack_start(self.label_id, False, False, 0)
+        for i in range(4):
+            horBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+            horBox.pack_start(self.labellist[i], False, False, 0)
+            horBox.pack_start(self.spinnerlist[i], False,False,0)
+            mainBox.pack_start(horBox, True, True, 0)
 
-        self.scrolledwindow.add(privacy_box)
+        empty = Gtk.Label()
+        mainBox.pack_start(empty,0,0,0)
+        mainBox.pack_start(self.label_pn, False, False, 0)
+        for i in range(4):
+            horBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+            horBox.pack_start(self.labellist[i+4], False, False, 0)
+            horBox.pack_start(self.spinnerlist[i+4], False,False,0)
+            mainBox.pack_start(horBox, True, True, 0)
+
+        empty = Gtk.Label()
+        mainBox.pack_start(empty,0,0,0)
+        mainBox.pack_start(self.label_ad, False, False, 0)
+        for i in range(4):
+            horBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+            horBox.pack_start(self.labellist[i+8], False, False, 0)
+            horBox.pack_start(self.spinnerlist[i+8], False,False,0)
+            mainBox.pack_start(horBox, True, True, 0)
+
+        empty = Gtk.Label()
+        mainBox.pack_start(empty,0,0,0)
+        mainBox.pack_start(self.label_cd, False, False, 0)
+        for i in range(4):
+            horBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+            horBox.pack_start(self.labellist[i+12], False, False, 0)
+            horBox.pack_start(self.spinnerlist[i+12], False,False,0)
+            mainBox.pack_start(horBox, True, True, 0)
+
+        stc_privacy.add(box_privacy_main)
 
 
         # add reload button at 'security status' stack
@@ -565,36 +518,55 @@ class Application(Gtk.Window):
         row.add(box_alarm)
         stc_setting.add(row)
 
-    def fnt_allcheck(self,widget, allcheck_btn):
-        if allcheck_btn.get_active():
-            self.id_check.set_active(True)
-            self.pn_check.set_active(True)
-            self.ad_check.set_active(True)
-            self.cd_check.set_active(True)
-        else:
-            self.id_check.set_active(False)
-            self.pn_check.set_active(False)
-            self.ad_check.set_active(False)
-            self.cd_check.set_active(False)
+    def stop_timer(self):
+        """ Stop the timer. """
+        if self.timeout_id:
+            GLib.source_remove(self.timeout_id)
+            self.timeout_id = None
+        
+        subprocess.run('python3 /usr/bin/pichecker.py', shell=True)
 
-    def on_check_toggled(self, widget, category_check, checklist):
-        if category_check.get_active():
-            for check in checklist:
-                check.set_active(True)
-        else:
-            for check in checklist:
-                check.set_active(False)
+    def on_timeout(self, *args, **kwargs):
+        self.counter -= 1
+        progress = 0
+        if os.path.exists('/usr/bin/progress.txt'):
+            progress = int(subprocess.check_output('wc -l < /usr/bin/progress.txt', shell=True).decode())
+            if 0 < progress and progress < 16:
+                self.spinnerlist[progress-1].stop()
+            elif progress == 16 and os.path.exists('/usr/bin/result3.txt'):
+                self.spinnerlist[15].stop()
+                os.remove('/usr/bin/progress.txt')
+                self.stop_timer()
+                return False
+        return True
+            
+    def fnt_start_search(self, widget):
+        self.timeout_id = None
+        self.info_index = 0
+        for i in range(4):
+            if os.path.exists('/usr/bin/result'+str(i)+'.txt'):
+                os.remove('/usr/bin/result'+str(i)+'.txt')
+        if os.path.exists('/usr/bin/progress.txt'):
+                os.remove('/usr/bin/progress.txt')
 
-    def fnt_pirm(self, widget, result, checklist):
-        for j in range(4):
-            i = 0
-            for check in checklist[j]:
-                if check.get_active():
-                    filepath = result[j][i-1].split(":")[0]
-                    searched = result[j][i-1].split(":")[1]
-                    print('path:',filepath, "   searched:",searched)
-                    subprocess.run("sudo sed -i 's/"+searched+"//' "+filepath, shell=True)
-                i += 1
+        self.label_id.set_markup("<span font='13'><b>주민등록 번호</b></span>")
+        self.label_pn.set_markup("<span font='13'><b>전화번호</b></span>")
+        self.label_ad.set_markup("<span font='13'><b>주소</b></span>")
+        self.label_cd.set_markup("<span font='13'><b>카드번호</b></span>")
+
+        for i in range(4):
+            self.labellist[4*i].set_markup("<span font='10'>     기본 형식 파일을 검색 중입니다.</span>")
+            self.labellist[4*i+1].set_markup("<span font='10'>     odt 형식 파일을 검색 중입니다.</span>")
+            self.labellist[4*i+2].set_markup("<span font='10'>     hwp 형식 파일을 검색 중입니다.</span>")
+            self.labellist[4*i+3].set_markup("<span font='10'>     pdf 형식 파일을 검색 중입니다.</span>")
+
+        self.counter = 4 * int(9999)
+        for i in range(16):
+            self.spinnerlist[i].start()
+
+        home = subprocess.check_output('eval echo ~$PCCHECKER_USER', shell=True).decode().strip()
+        subprocess.run('sudo systemctl restart --no-block pcchecker-search@"'+ home +'".service',shell=True)
+        self.timeout_id = GLib.timeout_add(250, self.on_timeout, None)
 
     # set/reload score at 'security status' window
     def fnt_set_score(self, widget):

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo 'Installing python module dependency - pyhwp'
+/usr/bin/pip3 install pyhwp

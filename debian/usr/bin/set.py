@@ -2,7 +2,7 @@
 import subprocess
 from gi.repository import Gtk
 from datetime import date
-import os
+
 
 ## search and set password info ##
 def set_password():
