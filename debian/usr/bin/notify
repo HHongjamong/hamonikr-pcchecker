@@ -3,11 +3,11 @@ import count
 import subprocess
 
 # count the score
-(cnt,total_cnt) = count.count_score()
-total_score_val = round(cnt / total_cnt * 100)
+total_cnt = count.count_score()
+# total_score_val = round(cnt / total_cnt * 100)
 
 # send notify if score <=70
-if 70 >= total_score_val:
+if 70 >= total_cnt:
     # set display to send notify
     display = str(subprocess.check_output("ls /tmp/.X11-unix/* | sed 's#/tmp/.X11-unix/X##' | head -n 1",shell=True).decode().strip())
     # set user to send notify
