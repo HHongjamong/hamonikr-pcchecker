@@ -1,17 +1,17 @@
 # HamoniKR PC Checker
 
 ![GitHub
-License](https://img.shields.io/github/license/2020-Invesum-Internship/hamonikr-pcchecker)
+License](https://img.shields.io/github/license/HHongjamong/hamonikr-pcchecker)
 ![GitHub repo
-size](https://img.shields.io/github/repo-size/2020-Invesum-Internship/hamonikr-pcchecker)
+size](https://img.shields.io/github/repo-size/HHongjamong/hamonikr-pcchecker)
 ![GitHub
-contributors](https://img.shields.io/github/contributors/2020-Invesum-Internship/hamonikr-pcchecker)
+contributors](https://img.shields.io/github/contributors/HHongjamong/hamonikr-pcchecker)
 ![GitHub
-stars](https://img.shields.io/github/stars/2020-Invesum-Internship/hamonikr-pcchecker?style=social)
+stars](https://img.shields.io/github/stars/HHongjamong/hamonikr-pcchecker?style=social)
 ![GitHub
-forks](https://img.shields.io/github/forks/2020-Invesum-Internship/hamonikr-pcchecker?style=social)
+forks](https://img.shields.io/github/forks/HHongjamong/hamonikr-pcchecker?style=social)
 ![GitHub
-issues](https://img.shields.io/github/issues/2020-Invesum-Internship/hamonikr-pcchecker?style=social)
+issues](https://img.shields.io/github/issues/HHongjamong/hamonikr-pcchecker?style=social)
 
 ‘HamoniKR PC Checker’ 는 한국의 일반 리눅스 데비안 계열의 OS 사용자들이  쉽게 보안상태를 점검/관리하고, 개인정보를 보호할 수 있도록 하는 보안 패널 서비스 입니다.
 <br/>
@@ -64,17 +64,11 @@ git clone https://github.com/HHongjamong/hamonikr-pcchecker.git && cd hamonikr-p
 
 ## Contributing to HamoniKR PC Checker
 
-이 프로젝트에 기여하는 방법은 다음과 같습니다.
+"PC Checker" 는 소스코드와 산출물, 진행과정 등이 모두 공개된 오픈소스 프로젝트입니다.
 
-1. 이 저장소를 Fork 하세요.
-2. 자신이 작업할 branch 를 생성합니다 : `git checkout -b <branch_name>`.
-3. 수정사항을 반영하고 커밋합니다 : `git commit -m '<commit_message>'`
-4. 저장소에 작업한 브랜치를 Push : `git push origin hamonikr-pcchecker/<location>`
-5. pull request 를 생성합니다.
-* [여기](https://github.com/2020-Ocarina/hamonikr-pcchecker_source-packaging)서 소스 패키지를 확인하실 수 있습니다.
+사용자 분들, 기여자 분들과의 활발한 의사소통을 원하고, 여러분의 참여를 기다리고 있습니다!
 
-보다 자세한 내용은 GitHub documentation on [creating a pull
-request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) 를 참고하세요.
+프로젝트에 기여하는 방법을 해당 링크에서 확인하실 수 있습니다.
 
 ## Contributors
 
@@ -89,5 +83,5 @@ request](https://help.github.com/en/github/collaborating-with-issues-and-pull-re
 ## Contact
 
 연락이 필요한 경우 <yerin090989@gmail.com> 또는 <yejisoft@gmail.com> 로 내용을 보내주세요.  
-프로젝트의 보다 자세한 사항과 모든 문서를 [해당 링크](http://team.hamonikr.org:18090/pages/viewpage.action?pageId=18415642)서 확인하실 수 있습니다.
+프로젝트의 보다 자세한 사항과 모든 문서를 [해당 링크](http://team.hamonikr.org:18090/pages/viewpage.action?pageId=18415642)에서 확인하실 수 있습니다.
 
