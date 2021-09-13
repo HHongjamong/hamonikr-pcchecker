@@ -68,7 +68,7 @@ git clone https://github.com/HHongjamong/hamonikr-pcchecker.git && cd hamonikr-p
 
 사용자 분들, 기여자 분들과의 활발한 의사소통을 원하고, 여러분의 참여를 기다리고 있습니다!
 
-프로젝트에 기여하는 방법을 해당 링크에서 확인하실 수 있습니다.
+프로젝트에 기여하는 방법을 [해당 링크](https://github.com/HHongjamong/hamonikr-pcchecker/wiki)에서 확인하실 수 있습니다.
 
 ## Contributors
 
