@@ -13,60 +13,54 @@ forks](https://img.shields.io/github/forks/2020-Invesum-Internship/hamonikr-pcch
 ![GitHub
 issues](https://img.shields.io/github/issues/2020-Invesum-Internship/hamonikr-pcchecker?style=social)
 
- 이 프로그램은 리눅스 데스크탑 사용자의 손쉬운 PC 상태 관리를 위해 만들어
- 졌습니다.<br/>
- 지원 OS : [HamoniKR 3.0](https://hamonikr.org/), [TmaxOS OE](https://tmaxanc.com/#!/download/TmaxOSOE/product), [Gooroom](https://github.com/gooroom), [Hancom Gooroom](https://github.com/hancomgooroom), [Ubuntu](https://ubuntu.com/), [LinuxMint](https://linuxmint.com/) 에서 사용가능 합니다.
+‘HamoniKR PC Checker’ 는 한국의 일반 리눅스 데비안 계열의 OS 사용자들이  쉽게 보안상태를 점검/관리하고, 개인정보를 보호할 수 있도록 하는 보안 패널 서비스 입니다.
+<br/>
+[HamoniKR 3.0](https://hamonikr.org/), [TmaxOS OE](https://tmaxanc.com/#!/download/TmaxOSOE/product), [Gooroom](https://github.com/gooroom), [Hancom Gooroom](https://github.com/hancomgooroom), [Ubuntu](https://ubuntu.com/), [LinuxMint](https://linuxmint.com/) 에서의 호환성을 제공합니다.
 
+PC Checker의 주요 기능은 다음과 같습니다.
+* 시스템 점검 : PC의 여러가지 시스템 정보 및 점검항목들의 보안상태를 확인하고 각 점검항목을 설정합니다.
+* 보안점검 알림 : 보안상태가 위험할 경우 알람 기능을 통해 사용자가 보안상태를 점검하도록 합니다.
+* 개인 정보 보호 : PC 내 개인정보로 추정되는 데이터가 들어있는 파일을 찾고 해당되는 데이터에 대한 조치를 일괄적으로 수행합니다.
 
-### TODO
- - 바이러스 검사 확인(마지막 검사 후 30일 이내 안전/90일 이내 주의/90일 이상
-   위험)
- - 업데이트 상세 확인(보안 업데이트인 경우 기간에 상관없이 위험으로 표시되도록
-   변경)
+![스크린샷, 2021-09-09 01-36-12](https://user-images.githubusercontent.com/55476302/133084363-9a90c6dc-5af0-47d8-972c-a7a7f9b15dc7.png)
+![스크린샷, 2021-09-05 19-00-43](https://user-images.githubusercontent.com/55476302/133084394-92a40717-cd64-4ea2-916e-c89f3e6ca0c0.png)
 
-<hr>
+<br/>
 
-## 설치 전 요구사항
+## License
 
-이 프로그램은 아래의 패키지를 사용하고 있으며 자신이 컴퓨터에 해당 패키지가 없으면 자동 설치가 진행됩니다. (하모니카 3.0 은 기본 상태에서 구동.)
-
-* `python 3.6`
-* `gtk 3.0`
-* `gir1.2-appindicator3-0.1`
-* `timeshift`
-* `gufw`
-
-## 패키지 설치
-
-다음과 같은 방법으로 PC 지킴이를 설치할 수 있습니다.
-
+이 프로젝트는 [GPL3](./LICENSE) 을 따릅니다.
 
 ## HamoniKR PC Checker 설치
 
-```
-sudo add-apt-repository ppa:yeji980407/hamonikr-pcchecker
-sudo apt-get update
-sudo apt-get install hamonikr-pcchecker
-```
-### ppa 사용 불가한 환경일 경우 (Gooroom OS)
+프로젝트의 [Release](https://github.com/HHongjamong/hamonikr-pcchecker/releases)에서 최신 패키지를 다운로드 받을 수 있습니다.
 
-다운로드 받은 디렉토리 안에서 아래와 같이 빌드하면 release 폴더 안에 설치 가능한 데비안 파일이 생성됩니다.
+패키지를 다운로드 받은 후 다음 명령을 통해 설치합니다.
 ```
-sh build
+sudo apt install ./hamonikr-pcchecker-2.0.0_all.deb
 ```
 
 ## HamoniKR PC Checker 삭제
 
 ```
-sudo apt-get --purge remove hamonikr-pcchecker
+sudo apt purge hamonikr-pcchecker
 ```
 
-## Using HamoniKR PC Checker
+## HamoniKR PC Checker 사용법
 
 ```
 프로그램메뉴 > PC 지킴이 실행
 ```
+보다 자세한 사용법은 [PC Checker 시연영상](https://www.youtube.com/watch?v=3maGiL3vSD8)을 통해 확인하실 수 있습니다.
 
+## 소스코드 다운로드 및 빌드 방법
+
+아래 명령어를 통해 소스코드를 다운로드 받고 빌드할 수 있습니다.
+```
+git clone https://github.com/HHongjamong/hamonikr-pcchecker.git && cd hamonikr-pcchecker
+
+./build
+```
 
 ## Contributing to HamoniKR PC Checker
 
@@ -88,19 +82,12 @@ request](https://help.github.com/en/github/collaborating-with-issues-and-pull-re
 
 * [@chaeya](https://github.com/chaeya) 📖
 * [@Lukehan](https://github.com/LukeHan1128) 🐛
-
-You might want to consider using something like the [All
-Contributors](https://github.com/all-contributors/all-contributors)
-specification and its [emoji
-key](https://allcontributors.org/docs/en/emoji-key).
+* [@yerin0130](https://github.com/yerin0130) 📖
+* [@RyuSeohyeon16](https://github.com/RyuSeohyeon16) 🐛
+* [@yeji0407](https://github.com/yeji0407) 📖
 
 ## Contact
 
-연락이 필요한 경우 <ryuish541@gmail.com> 또는 <yejisoft@gmail.com> 로 내용을 보내주세요.  
-프로젝트의 보다 자세한 사항과 모든 산출물을 [여기](http://team.hamonikr.org:18090/display/PC)서 확인하실 수 있습니다.
-
-## License
-
-이 프로젝트는 [GPL3](./LICENSE) 을 따릅니다.
-
+연락이 필요한 경우 <yerin090989@gmail.com> 또는 <yejisoft@gmail.com> 로 내용을 보내주세요.  
+프로젝트의 보다 자세한 사항과 모든 문서를 [해당 링크](http://team.hamonikr.org:18090/pages/viewpage.action?pageId=18415642)서 확인하실 수 있습니다.
 
